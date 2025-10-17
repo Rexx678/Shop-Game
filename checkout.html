@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    /* Add a little style for the image */
+    .checkout-img {
+      width: 100%;
+      height: 200px; /* fixed height for consistency */
+      object-fit: cover; /* ensures the image covers the area without distortion */
+      margin-bottom: 15px;
+      border-radius: 0.375rem; /* Bootstrap card-like rounding */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container my-5">
+    <h2 class="text-center mb-4 text-success"><i class='bx bx-credit-card'></i> Checkout</h2>
+    <div class="card mx-auto" style="max-width: 400px;">
+      <div class="card-body">
+        <img id="gameImage" class="checkout-img" alt="Game Image" src="">
+        
+        <h5 class="card-title" id="gameTitle">Game Name</h5>
+        <p class="card-text" id="gamePrice">Price: Free</p>
+        <button class="btn btn-success w-100" onclick="confirmPayment()">Download</button>
+        <a href="index.html" class="btn btn-secondary w-100 mt-2">Cancel</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const checkoutProductString = sessionStorage.getItem('checkoutProduct');
+    const product = JSON.parse(checkoutProductString);
+    
+    // Check if product data exists
+    if (product && product.name) {
+      document.getElementById('gameTitle').textContent = product.name;
+      document.getElementById('gamePrice').textContent = `Price: ${product.price}`;
+      document.getElementById('gameImage').src = product.image;
+    } else {
+      document.getElementById('gameTitle').textContent = "Unknown Game";
+      document.getElementById('gamePrice').textContent = "Price: N/A";
+    }
+    
+    // Re-declare gameName based on the product object for confirmPayment function
+    const gameName = product ? product.name : null;
+
+    function confirmPayment() {
+      if (!gameName) return alert("No game selected.");
+
+      // Get existing inventory or empty array
+      let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+      if (!inventory.includes(gameName)) {
+        inventory.push(gameName)
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        alert(`${gameName} added to your inventory!`);
+      } else {
+        alert(`${gameName} is already in your inventory.`);
+      }
+
+      // Redirect to inventory page
+      window.location.href = 'inventory.html';
+    }
+  </script>
+
+</body>
+
+</html>
